@@ -1,0 +1,122 @@
+Joshua M. Hughes
+1/21/2017
+COP2830
+Professor Barrell
+
+Title: Creating a true portable Git-Bash environment
+
+Abstract: The Git-Bash portable will execute from a portable device; however, the default initialization scripts will map the users HOME directory as well as other enviroment variables to the Windows User Profile on the hard drive. This will result in generated/saved SSH keys, stored authentication credentials, and other global configurations being saved to a configuration file in the Windows User Profile. If using a computer with public accesibility this can introduce a security risk. Furthermore, after ejecting the portable drive the stored configurations will not transfer with the portable device. This will result in recreating the global configurations each time the portable device is ejected and mounted. This document will provide the steps necessary for creating a true portable Git-Bash environment.
+
+Step 1 - Identifying Environment Variables
+
+	The first step is to identify Environment Variables that reference the Windows User Profile. You may also use this step to identify other Environment Variables that may pertain to your development environment. We will use the printenv command to display all Environment Variables for the current environment in the console. 
+	
+	- Execute the default bin-bash portable executable (git-bash.exe)
+	- From the bash command prompt type the command: printenv
+	- Identify the enviroment variables to modified and then close the bash shell
+	
+Step 2 - Create Portable HOME Location
+
+	After identifying environment variables, we must now begin creating our portable environment. We will use File Explorer to create a new HOME directory.
+	
+	- Open File Explorer
+	- Browse to the installation directory for your portable GIT install (e.g. D:\PortableApps\PortableGit\)
+	- This directory will contain other folders such as bin, etc, tmp, and usr
+	- Create a new directory named home
+	- In the home directory create another directory for your portable environment (e.g. D:\PortableApps\PortableGit\home\joshua)
+	
+Step 3 - Set Portable Environment Variables
+
+	For this example we will set environment variables following the guide provided by VonC and Mark Bell on stackoverflow.com. We will open the Bash Profile configuration file using a text editor. Finally, we will enter environment variables.
+	
+	- Open File Explorer
+	- Browse to the etc folder in the installation directory for your portable GIT install (e.g. D:\PortableApps\PortableGit\etc)
+	- Locate a file named profile and open the file in a text editor
+	- As the environment variables may be used in the profile initialization script it is important to set the new environment variables in the begining of the file. The order in which the enviroment variables are set is important. Dependent variables must be set after the parent variables.
+	- Locate the line in the text editor that contains the following text: # System-wide profile file
+	- Type the following lines of text into the text file below the line identified in the previous step:
+	
+				# Setting custom Environment Variables to portable drive
+					HOMEDRIVE="/"
+					
+					HOME="/home/joshua"
+					HOME="$(cd "$HOME" ; pwd)"
+
+					USERPROFILE="${HOME}"
+					HOMEPATH="${USERPROFILE}"
+					HISTFILE="${USERPROFILE}/.bash_history"
+					BASHRC="${USERPROFILE}/.bashrc"
+
+	- Save the file and close the text editor
+	
+Step 4 - Confirm Portable Environment Variables
+
+	We will now mount the portable drive and execute the bash shell environment. After initializing the bash shell, we will confirm that our environment variables were properly set
+	
+	- Execute the default bin-bash portable executable (git-bash.exe)
+	- From the bash command prompt type the print environment command 
+	
+		printenv
+		
+	- Confirm the enviroment variables were set as expected
+	
+Step 5 - Set Git Global Configuration Parameters
+
+	We will now set the git Global Configuration parameters and confirm that the configuration files are stored on the portable device.
+
+	- Set the git user.name global variable
+		
+		git config --global user.name "Your Name"
+			
+	- Set the git user.email global variable
+	
+		git config --global user.email you@yourdomain.com
+		
+	- Open File Explorer
+	- Browse to the etc folder in the installation directory for your portable GIT install (e.g. D:\PortableApps\PortableGit\home\joshua\)
+	- You should confirm that the .bash_history and .gitconfig files were created in your home directory
+	
+Step 6 - Clone a GitHub Repository
+
+	We will now browse to the location on our portable drive in which our clones repository will be created. We will then clone a GitHub Repository to our new portable environment. This repository will be used later to configure local authentication.
+	
+	- Login to your GitHub account and create a new repository
+	- Copy the repository location to the clipboard
+	- Identify the drive letter assigned to the portable device
+	- Change to the appropriate location using bash commands
+	
+		cd /d/COP2830
+			
+	- Clone the repository to your portable environment
+
+		git clone https://github.com/BytingBucs2-0/JHughes_NotesAboutTheThingsThatMakeTheInternetGoRound.git
+	
+	- After the clone is complete, change to the new repository directory
+	
+		cd JHughes_NotesAboutTheThingsThatMakeTheInternetGoRound/
+		
+	- Create/Save a new file in the repository
+	- Check the status of the repository
+	
+		git status
+
+	- Add the new file to the commit files
+	
+		git add Configuring Portable Git Environment.txt
+
+	-
+Step 7 - Configuring Authentication Using Stored Credentials
+
+Step 8 - Configuring Authentication Using SSH Keys
+
+	
+REFERENCES: 
+
+	http://stackoverflow.com/questions/3454774/fix-msysgit-portable-home-location
+	https://markb.co.uk/portable-git-windows-setting-home-environment-variable.html
+	https://help.github.com/articles/connecting-to-github-with-ssh/
+	https://git-scm.com/docs/git-credential-store
+	https://git-scm.com/docs/git-clone
+	
+
+	

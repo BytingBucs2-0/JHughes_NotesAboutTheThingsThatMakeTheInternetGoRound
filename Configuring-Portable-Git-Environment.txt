@@ -104,11 +104,139 @@ Step 6 - Clone a GitHub Repository
 	
 		git add Configuring Portable Git Environment.txt
 
-	-
+	- Check the status of the repository to confirm the file was added to the commit files
+	
+		git status
+		
+	- Commit the files
+	
+		git commit -m "Initial Remote Commit"
+	
+	- Push the changes to the cloned repository
+	
+		git push
+		
+	- Type in your username for the repository when prompted
+	- Type your password for the repository when prompted
+	- You cloned repository should now list the same files as your remote repository on the Git Hub site
+	
 Step 7 - Configuring Authentication Using Stored Credentials
 
+	We will now store our credentials for the repository. It is important to note that the stored credentials file is used when accessing a Git repository using the HTTPS protocol. 
+	
+	- Create the crendentials file and store the credentials for the repository
+	
+		git config credential.helper store
+		
+	- To set the stored credtials we must execute a push to the repository
+	
+		git push 
+		
+	- Type in your username for the repository when prompted
+	- Type your password for the repository when prompted
+	- Your credentials will be stored in a file named .git-credentials in your portable HOME folder (e.g. D:\PortableApps\PortableGit\home\joshua\)
+	
 Step 8 - Configuring Authentication Using SSH Keys
 
+	We will now generate SSH keys for authenticating with our Git Hub repository. It is important to note that the SSH keys authentication method is used when accessing a Git repository using the SSH protocol.
+	
+	- Change the working directory to the portable HOME directory (DO NOT STORE THE SSH KEYS IN YOUR REPOSITORY)
+	
+		cd ~
+		
+	- Create a new .ssh directory for storing the SSH keys
+	
+		mkdir .ssh
+		
+	- Generate your SSH keys (note: paramter flags are case sensitive)
+	
+		ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+	
+	- Enter the path to your portable HOME and a file name when prompted for a save location
+		
+		/home/joshua/.ssh/id_rsa
+		
+	- Enter a passphrase when prompted
+	- Your public and private SSH keys will now be saved in the portable HOME/.ssh directory
+	- We must now create an initialization script to ensure the ssh-agent is started when the bash shell is initialized
+	- Open File Explorer
+	- Browse to the portable HOME folder in the installation directory for your portable GIT install (e.g. D:\PortableApps\PortableGit\home\joshua\)
+	- Create an empty file named profile
+	- Paste the initialization script provided below into the file
+	
+											SSH_ENV="$HOME/.ssh/environment"
+
+											# start the ssh-agent
+											function start_agent {
+												echo "Initializing new SSH agent..."
+												# spawn ssh-agent
+												ssh-agent | sed 's/^echo/#echo/' > $SSH_ENV
+												echo succeeded
+												chmod 600 $SSH_ENV
+												. $SSH_ENV > /dev/null
+												ssh-add
+											}
+
+											# test for identities
+											function test_identities {
+												# test whether standard identities have been added to the agent already
+												ssh-add -l | grep "The agent has no identities" > /dev/null
+												if [ $? -eq 0 ]; then
+													ssh-add
+													# $SSH_AUTH_SOCK broken so we start a new proper agent
+													if [ $? -eq 2 ];then
+														start_agent
+													fi
+												fi
+											}
+
+											# check for running ssh-agent with proper $SSH_AGENT_PID
+											ps -ef | grep $SSH_AGENT_PID | grep ssh-agent > /dev/null
+											if [ $? -eq 0 ]; then
+												test_identities
+											# if $SSH_AGENT_PID is not properly set, we might be able to load one from
+											# $SSH_ENV
+											else
+												. $SSH_ENV > /dev/null
+												ps -ef | grep $SSH_AGENT_PID | grep ssh-agent > /dev/null
+												if [ $? -eq 0 ]; then
+													test_identities
+												else
+													start_agent
+												fi
+											fi
+	- Save the file and close the text editor
+	- Your SSH keys must now be added to your Git Hub account.
+	- Login to your Git Hub Account and open Settings => SSH and GPG Keys 
+	- Click on "New SSH Key"
+	- Enter the email used to generate the SSH keys in the "Title" field
+	- Open the SSH key file named id_rsa.pub located in your portable HOME Directory using your text editor
+	- Copy the entire contents of the file to the clipboard
+	- Paste the entire contents of the clipboard into the "Key" box on the Git Hub site
+	- Click "Add SSH Key"
+	- The SSH Key will now be assocaited with your account. 
+	- If you have previously used the HTTPS protocol and stored credentials to clone the repository, you must change the repository configuration file to use the SSH protocol
+	- Browse to the repository on your portable device
+	- Open the .git folder (The folder may be hidden)
+	- Use your text editor to open the config file in the .git directory
+	- Locate the url parameter in the [remote "origin"] section
+	- Change the protocol portion of the url from HTTPS to SSH_AGENT_PID
+	- Close the bash shell and reopen the bash shell
+	- Change to the appropriate repository location using bash commands
+	
+		cd /d/COP2830/JHughes_NotesAboutTheThingsThatMakeTheInternetGoRound/
+	
+	- Check the status of the repository to confirm the file was added to the commit files
+	
+		git status
+		
+	- Commit the files
+	
+		git commit -m "Initial Remote Commit"
+	
+	- Push the changes to the cloned repository
+	
+		git push 
 	
 REFERENCES: 
 
@@ -117,6 +245,7 @@ REFERENCES:
 	https://help.github.com/articles/connecting-to-github-with-ssh/
 	https://git-scm.com/docs/git-credential-store
 	https://git-scm.com/docs/git-clone
+	https://git-scm.com/docs/git-push
 	
 
 	

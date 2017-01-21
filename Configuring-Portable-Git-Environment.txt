@@ -5,7 +5,7 @@ Professor Barrell
 
 Title: Creating a true portable Git-Bash environment
 
-Abstract: The Git-Bash portable will execute from a portable device; however, the default initialization scripts will map the users HOME directory as well as other enviroment variables to the Windows User Profile on the hard drive. This will result in generated/saved SSH keys, stored authentication credentials, and other global configurations being saved to a configuration file in the Windows User Profile. If using a computer with public accesibility this can introduce a security risk. Furthermore, after ejecting the portable drive the stored configurations will not transfer with the portable device. This will result in recreating the global configurations each time the portable device is ejected and mounted. This document will provide the steps necessary for creating a true portable Git-Bash environment.
+Abstract: The Git-Bash portable will execute from a portable device; however, the default initialization scripts will map the users HOME directory as well as other enviroment variables to the Windows User Profile on the hard drive. This will result in generated/saved SSH keys, stored authentication credentials, and other global configurations being saved to a configuration file in the Windows User Profile. If using a computer with public accesibility this can introduce a security risk. Furthermore, after ejecting the portable drive the stored configurations will not transfer with the portable device. This will result in recreating the global configurations each time the portable device is ejected and mounted. This document will provide the steps necessary for creating a true portable Git-Bash environment. The steps in this document will prevent credentials and SSH keys from being stored on the local hard drive of a computer; however, the plain text credentials and SSH keys are saved on your portable device. If the portable device is lost or stolen an attacker may be able to gain access to your Git Hub account using the information on the portable drive. Change your password and remove SSH keys IMMEDIATELY if the portable device is lost or stolen. Enjoy!
 
 Step 1 - Identifying Environment Variables
 
@@ -240,6 +240,9 @@ Step 8 - Configuring Authentication Using SSH Keys
 	- Push the changes to the cloned repository
 	
 		git push 
+		
+	- Enter the SSH key pass phrase to store the RSA Host Key and complete the push request
+	
 	
 REFERENCES: 
 

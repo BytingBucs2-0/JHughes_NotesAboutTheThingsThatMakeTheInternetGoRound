@@ -217,7 +217,8 @@ Step 8 - Configuring Authentication Using SSH Keys
 	- The SSH Key will now be assocaited with your account
 	- Browse to the repository on your Git Hub account
 	- Copy the SSH clone link to the clipboard
-	- Perform the procedure in Step 6 for cloning a the repository using the SSH link
+	- Close the Bash Shell and Reopen the Bash Shell 
+	- Perform the procedure in Step 6 for cloning a the repository using the SSH link or continue
 	- If you have previously used the HTTPS protocol and stored credentials to clone the repository, you must change the repository configuration file to use the SSH protocol
 	- Browse to the repository on your portable device
 	- Open the .git folder (The folder may be hidden)
